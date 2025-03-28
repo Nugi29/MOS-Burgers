@@ -15,7 +15,7 @@ function displayOrders() {
         const itemsList = Array.isArray(order.items) ? order.items.map(item => {
             const quantity = Number(item.quantity) || 0;
             const price = Number(item.price) || 0;
-            return `<li>${item.name || 'Unknown Item'} (x${quantity}) - Rs. ${(price * quantity).toFixed(2)}</li>`;
+            return `<li>${item.name || 'Unknown Item'} (x${quantity}) - Rs. ${(price * quantity)}</li>`;
         }).join('') : '<li>No items</li>';
 
         const discount = Number(order.discount) || 0;
@@ -30,8 +30,8 @@ function displayOrders() {
                     ${itemsList}
                 </ul>
             </td>
-            <td>Rs. ${discount.toFixed(2)}</td>
-            <td>Rs. ${totalPrice.toFixed(2)}</td>
+            <td>Rs. ${discount}</td>
+            <td>Rs. ${totalPrice}</td>
             <td><button class="btn btn-sm" style="background-color: #ffc400;" onclick="printOrderReport(${index})">Print Order Report</button></td>
         `;
         orderTableBody.appendChild(row);
@@ -50,97 +50,107 @@ function addOrder(newOrder) {
 }
 
 function printOrderReport(index) {
-    const orders = JSON.parse(sessionStorage.getItem('orders')) || [];
+    const orders = JSON.parse(sessionStorage.getItem("orders") || "[]");
     const order = orders[index];
 
-    if (order) {
-        const { customerName = 'No Name', contactNo = 'No Contact' } = order;
-        const items = Array.isArray(order.items) ? order.items : [];
-        const discount = Number(order.discount) || 0;
-        const totalPrice = Number(order.totalPrice) || 0;
-
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-
-        
-        // doc.setFillColor(0, 0, 0);
-        doc.rect(0, 0, 210, 297, 'F');
-
-        const logoUrl = '../img/MOS_BURGER.png'; 
-        doc.addImage(logoUrl, 'JPEG', 85, 15, 45, 30); // Center logo: x=85, y=15, width=40, height=40
-
-        doc.setFontSize(16);
-        doc.setTextColor(255, 255, 255)
-        doc.text("SALES INVOICE", 105, 80, null, null, "center");
-
-        doc.setDrawColor(255, 255, 255);
-        doc.line(10, 90, 200, 90);
-
-        doc.setFontSize(12);
-        doc.setTextColor(255, 255, 255);
-        doc.text(`Date: ${new Date().toLocaleString()}`, 10, 100);
-        doc.text(`Customer: ${customerName}`, 10, 110);
-        doc.text(`Contact: ${contactNo}`, 10, 120);
-
-        doc.setFontSize(14);
-        doc.setTextColor(0, 0, 0); 
-        doc.setFillColor(255, 255, 255);
-        doc.rect(10, 130, 190, 10, 'F');
-
-        doc.text("Item", 15, 137);
-        doc.text("Qty", 100, 137);
-        doc.text("Price", 130, 137);
-        doc.text("Total", 170, 137);
-
-        // Table Content
-        doc.setFontSize(12);
-        doc.setTextColor(255, 255, 255);
-        let yPosition = 147;
-
-        items.forEach((item, i) => {
-            const quantity = Number(item.quantity) || 0;
-            const price = Number(item.price) || 0;
-            const total = quantity * price;
-
-            doc.text(item.name || 'Unknown Item', 15, yPosition);
-            doc.text(quantity.toString(), 100, yPosition);
-            doc.text(`Rs.${price.toFixed(2)}`, 130, yPosition);
-            doc.text(`Rs.${total.toFixed(2)}`, 170, yPosition);
-
-            yPosition += 10;
-            if (yPosition > 270) {
-                doc.addPage();
-                doc.setFillColor(0, 0, 0); 
-                doc.rect(0, 0, 210, 297, 'F');
-                yPosition = 20;
-            }
-        });
-
-        // Summary Section
-        yPosition += 10;
-        doc.setFontSize(14);
-        doc.setTextColor(255, 255, 255);
-        doc.line(10, yPosition, 200, yPosition); // Line above total
-        yPosition += 10;
-
-        doc.text(`Discount: Rs.${discount.toFixed(2)}`, 130, yPosition);
-        yPosition += 10;
-
-        doc.text(`Total Amount: Rs.${totalPrice.toFixed(2)}`, 130, yPosition);
-
-        // Footer
-        yPosition += 20;
-        doc.setFontSize(12);
-        doc.setTextColor(255, 255, 255);
-        doc.text("We appreciate your visit! Come back soon!", 105, yPosition, null, null, "center");
-
-        doc.setFontSize(10);
-        doc.text("MOS Burgers - Where taste meets satisfaction!", 105, yPosition + 10, null, null, "center");
-        doc.text("Visit us: www.mosburgers.lk", 105, yPosition + 20, null, null, "center");
-
-        // Save PDF
-        doc.save(`MOS_BURGERS_Invoice_${index + 1}.pdf`);
-    } else {
-        alert('Order not found!');
+    if (!order) {
+        alert("Order not found!");
+        return;
     }
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF("p", "mm", "a4");
+
+    const { customerName, contactNo, items, discount, totalPrice } = order;
+
+    // **HEADER**
+    doc.setFillColor(45, 45, 45);
+    doc.rect(0, 0, 210, 40, "F");
+
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(18);
+    doc.setTextColor(255, 255, 255);
+    doc.text("MOS BURGERS", 15, 15);
+    
+    doc.setFontSize(14);
+    doc.text("Sales Invoice", 160, 15);
+
+    doc.setFontSize(10);
+    doc.text("Invoice Date: " + new Date().toLocaleDateString(), 160, 25);
+    doc.text("Invoice Time: " + new Date().toLocaleTimeString(), 160, 30);
+    doc.text("Invoice #: " + (index + 1).toString().padStart(4, "0"), 160, 30);
+
+    // **CUSTOMER DETAILS**
+    doc.setFontSize(12);
+    doc.setTextColor(0, 0, 0);
+    doc.text("Bill To:", 15, 50);
+    
+    doc.setFontSize(10);
+    doc.text(`Customer Name: ${customerName || "N/A"}`, 15, 58);
+    doc.text(`Contact No: ${contactNo || "N/A"}`, 15, 65);
+
+    // **ORDER TABLE**
+    let startY = 80;
+    doc.setFillColor(230, 230, 230);
+    doc.rect(10, startY, 190, 10, "F");
+
+    doc.setFontSize(10);
+    doc.setTextColor(0, 0, 0);
+    doc.text("Item", 15, startY + 7);
+    doc.text("Qty", 100, startY + 7);
+    doc.text("Price", 130, startY + 7);
+    doc.text("Total", 170, startY + 7);
+
+    let yPosition = startY + 15;
+
+    items.forEach((item, idx) => {
+        const quantity = Number(item.quantity) || 0;
+        const price = Number(item.price) || 0;
+        const total = quantity * price;
+
+        doc.text(truncateText(item.name, 25), 15, yPosition);
+        doc.text(quantity.toString(), 100, yPosition);
+        doc.text(`Rs. ${price}`, 130, yPosition);
+        doc.text(`Rs. ${total}`, 170, yPosition);
+
+        yPosition += 10;
+
+        if (yPosition > 250) {
+            doc.addPage();
+            yPosition = 20;
+        }
+    });
+
+    // **ORDER SUMMARY**
+    yPosition += 10;
+    doc.setFillColor(240, 240, 240);
+    doc.rect(120, yPosition, 80, 30, "F");
+
+    doc.setFontSize(12);
+    doc.text("Subtotal:", 125, yPosition + 8);
+    doc.text(`Rs. ${totalPrice}`, 165, yPosition + 8);
+    doc.text("Discount:", 125, yPosition + 16);
+    doc.text(`Rs. ${discount}`, 165, yPosition + 16);
+
+    doc.setFontSize(14);
+    doc.setFont("helvetica", "bold");
+    doc.text("Total:", 125, yPosition + 26);
+    doc.text(`Rs. ${(totalPrice - discount)}`, 165, yPosition + 26);
+
+    // **FOOTER**
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "italic");
+    doc.setTextColor(100, 100, 100);
+    doc.text("Thank you for your business!", 105, 280, null, null, "center");
+    doc.text("MOS Burgers - Your taste, our passion!", 105, 285, null, null, "center");
+
+
+    // **SAVE PDF**
+    doc.save(`MOS_BURGERS_Invoice_${index + 1}.pdf`);
 }
+
+// **Utility Function to Truncate Text**
+function truncateText(text, maxLength) {
+    return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
+}
+

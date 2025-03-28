@@ -50,12 +50,16 @@ function populateCustomerDropdown() {
         option.value = index;
         option.textContent = `${customer.name} (${customer.phone})`;
         customerSelect.appendChild(option);
+
     });
 }
 
 // Fill customer information on selection
 function fillCustomerInfo() {
     const selectedIndex = document.getElementById('existingCustomer').value;
+    console.log('Selected index:', selectedIndex);
+
+    
     if (selectedIndex !== "") {
         const customer = customers[selectedIndex];
         document.getElementById('customerName').value = customer.name;
@@ -111,6 +115,13 @@ function addToCart(index) {
     renderCart();
 }
 
+// Update cart count
+function updateCartCount() {
+    const cartCount = document.getElementById('cartCount');
+    const totalItems = cart.reduce((sum, cartItem) => sum + cartItem.quantity, 0);
+    cartCount.textContent = totalItems;
+}
+
 // Render cart items
 function renderCart() {
     const cartItems = document.getElementById('cart-items');
@@ -130,6 +141,7 @@ function renderCart() {
         totalPrice += cartItem.price * cartItem.quantity;
     });
     document.getElementById('totalPrice').textContent = totalPrice.toFixed(2);
+    updateCartCount(); // Update cart count whenever the cart is rendered
 }
 
 // Update cart item quantity
@@ -149,6 +161,7 @@ function calculateTotal() {
     const discount = parseFloat(document.getElementById('discount').value) || 0;
     let totalPrice = parseFloat(document.getElementById('totalPrice').textContent);
     totalPrice -= discount;
+    document.getElementById('totalPrice').textContent = Math.max(0, totalPrice).toFixed(2); // Update displayed total price
     return Math.max(0, totalPrice).toFixed(2);
 }
 
@@ -217,6 +230,7 @@ function handleFilter() {
         : items;
     renderMenu(filteredItems);
 }
+
 function updateMenu() {
     const searchValue = document.getElementById('searchItems').value.toLowerCase();
     const categoryValue = document.getElementById('categoryFilter').value;
@@ -229,11 +243,6 @@ function updateMenu() {
 
     renderMenu(filteredItems);
 }
-
-// Attach event listeners to update menu on input and filter change
-
-
-
 
 // Initialize page on load
 window.onload = function () {
