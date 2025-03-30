@@ -9,6 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MOS Burgers > Menu</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 
     <style>
         .menu-card {
@@ -46,12 +47,15 @@
             width: 100%;
             z-index: 1000;
         }
+        .burger-icon {
+            color: #ff6b6b;
+        }
     </style>
 </head>
     <!-- Navigation Bar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark" id="navbar">
         <div class="container">
-            <a class="navbar-brand" href="index.html">MOS Burgers</a>
+            <a class="navbar-brand" href="index.html"><i class="fas fa-hamburger burger-icon me-2"></i>MOS Burgers</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -64,7 +68,7 @@
                         <a class="nav-link" href="order.html">Orders</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#customers">Customers</a>
+                        <a class="nav-link" href="customers.html">Customers</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#reports">Reports</a>
@@ -148,7 +152,10 @@
                             <span class="fw-bold">Total:</span>
                             <span class="fw-bold">Rs. <span id="totalPrice">0.00</span></span>
                         </div>
-                        <button id="calculateTotal" class="btn btn-secondary w-100 mb-2">Calculate Total</button>
+                        <div class="d-flex justify-content-between mb-3">
+                            <span class="fw-bold">Total with Discount:</span>
+                            <span class="fw-bold">Rs. <span id="totalWithDiscount">0.00</span></span>
+                        </div>
                         <button id="placeOrder" class="btn btn-success w-100">Place Order</button>
                     </div>
                 </div>

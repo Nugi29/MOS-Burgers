@@ -50,16 +50,12 @@ function populateCustomerDropdown() {
         option.value = index;
         option.textContent = `${customer.name} (${customer.phone})`;
         customerSelect.appendChild(option);
-
     });
 }
 
 // Fill customer information on selection
 function fillCustomerInfo() {
     const selectedIndex = document.getElementById('existingCustomer').value;
-    console.log('Selected index:', selectedIndex);
-
-    
     if (selectedIndex !== "") {
         const customer = customers[selectedIndex];
         document.getElementById('customerName').value = customer.name;
@@ -122,11 +118,32 @@ function updateCartCount() {
     cartCount.textContent = totalItems;
 }
 
+// Calculate raw total price (no discount)
+function calculateRawTotal() {
+    return cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+}
+
+// Calculate total price with discount
+function calculateTotal() {
+    const rawTotal = calculateRawTotal();
+    const discount = parseFloat(document.getElementById('discount').value) || 0;
+    return Math.max(0, rawTotal - discount);
+}
+
+// Update displayed totals
+function updateTotals() {
+    const rawTotal = calculateRawTotal();
+    const discountedTotal = calculateTotal();
+    
+    document.getElementById('totalPrice').textContent = rawTotal.toFixed(2);
+    document.getElementById('totalWithDiscount').textContent = discountedTotal.toFixed(2);
+}
+
 // Render cart items
 function renderCart() {
     const cartItems = document.getElementById('cart-items');
     cartItems.innerHTML = '';
-    let totalPrice = 0;
+    
     cart.forEach((cartItem, index) => {
         const cartItemElem = document.createElement('div');
         cartItemElem.classList.add('cart-item');
@@ -138,10 +155,10 @@ function renderCart() {
             </div>
         `;
         cartItems.appendChild(cartItemElem);
-        totalPrice += cartItem.price * cartItem.quantity;
     });
-    document.getElementById('totalPrice').textContent = totalPrice.toFixed(2);
-    updateCartCount(); // Update cart count whenever the cart is rendered
+    
+    updateTotals();
+    updateCartCount();
 }
 
 // Update cart item quantity
@@ -154,21 +171,6 @@ function updateQuantity(index, quantity) {
 function removeFromCart(index) {
     cart.splice(index, 1);
     renderCart();
-}
-
-// Calculate total price with discount
-function calculateTotal() {
-    const discount = parseFloat(document.getElementById('discount').value) || 0;
-    let totalPrice = parseFloat(document.getElementById('totalPrice').textContent);
-    totalPrice -= discount;
-    document.getElementById('totalPrice').textContent = Math.max(0, totalPrice).toFixed(2); // Update displayed total price
-    return Math.max(0, totalPrice).toFixed(2);
-}
-
-// Display total price after discount
-function showTotal() {
-    const totalPrice = calculateTotal();
-    alert(`The total price after discount is Rs.${totalPrice}`);
 }
 
 // Place an order
@@ -252,11 +254,11 @@ window.onload = function () {
         renderCart();
         populateCustomerDropdown();
     });
-
-    document.getElementById('calculateTotal').addEventListener('click', showTotal);
     document.getElementById('placeOrder').addEventListener('click', placeOrder);
     document.getElementById('searchItems').addEventListener('input', handleSearch);
     document.getElementById('categoryFilter').addEventListener('change', handleFilter);
     document.getElementById('searchItems').addEventListener('input', updateMenu);
     document.getElementById('categoryFilter').addEventListener('change', updateMenu);
+    document.getElementById('existingCustomer').addEventListener('change', fillCustomerInfo);
+    document.getElementById('discount').addEventListener('input', updateTotals);
 };
