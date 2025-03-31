@@ -74,13 +74,17 @@ function renderMenu(filterItems) {
         const card = document.createElement('div');
         card.classList.add('col-md-4', 'col-sm-6', 'mb-3');
         card.innerHTML = `
-            <div class="card menu-card">
-                <div class="card-body">
-                    <h5 class="card-title">${item.name}</h5>
-                    <p class="card-text">Price: Rs.${item.price.toFixed(2)}</p>
-                    <button class="btn btn-primary btn-add-item" onclick="addToCart(${index})">Add to Cart</button>
-                </div>
+        <div class="card border-secondary mb-3" style="max-width: 18rem;">
+            <div class="card-header fw-bold">${item.category}</div>
+            <div class="card-body text-secondary text-center">
+                <h5 class="card-title text-primary fw-bold fs-4">${item.name}</h5>
+                <p class="card-text text-warning fw-bold fs-5">Rs.${item.price.toFixed(2)}</p>
+                <p class="text-muted small">Stock: ${item.quantity} | Exp: ${item.expireDate}</p>
+                <button class="btn btn-outline-success w-100 mt-3" onclick="addToCart(${index})">
+                    <i class="bi bi-cart-plus"></i> Add to Cart
+                </button>
             </div>
+        </div>
         `;
         menuContent.appendChild(card);
     });
