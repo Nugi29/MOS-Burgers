@@ -101,7 +101,7 @@ mos-burgers/
 
 ## 👤 Author
 
-Created by Nugitha Disas as a final project for Web Development.
+Created by Nugitha Disas as a project for Web Development.
 ---
 
 ⭐️ From [Nugi29](https://github.com/Nugi29)
