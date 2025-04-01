@@ -32,10 +32,11 @@ function displayOrders() {
             </td>
             <td>Rs. ${discount}</td>
             <td>Rs. ${totalPrice}</td>
-            <td><button class="btn btn-sm" style="background-color: #ffc400;" onclick="printOrderReport(${index})">Print Order Report</button></td>
+            <td><button class="btn btn-sm" style="background-color:rgb(255, 81, 0);" onclick="printOrderReport(${index})">Print Order Report</button></td>
         `;
         orderTableBody.appendChild(row);
     });
+    
 }
 
 function saveOrdersToSessionStorage(orders) {
@@ -171,4 +172,8 @@ function printOrderReport(index) {
 function truncateText(text, maxLength) {
     return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
 }
+
+
+
+
 

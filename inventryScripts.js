@@ -1,6 +1,6 @@
 // Wait for the DOM to be fully loaded before accessing elements
+let items = [];
 document.addEventListener('DOMContentLoaded', function () {
-    let items = [];
     let editingIndex = -1;
 
     // Get DOM elements
@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function loadItemsFromJSON() {
-        fetch('items.json')
+        fetch('menu-data.json')
             .then(response => response.json())
             .then(data => {
                 if (!localStorage.getItem('items')) {
@@ -264,6 +264,5 @@ document.addEventListener('DOMContentLoaded', function () {
 function menuItemCount() {
     document.getElementById('menuItemCount').innerHTML = items.length;
     console.log(items.length);
-
 }
 
