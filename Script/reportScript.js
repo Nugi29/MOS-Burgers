@@ -538,21 +538,8 @@ function generatePDFReport() {
         addHeaderAndFooter(pageNum);
     });
 
-    // Preview PDF output
-    const pdfData = doc.output('datauristring');
-    const pdfWindow = window.open('', '_blank');
-    pdfWindow.document.open();
-    pdfWindow.document.write(`
-            <html>
-            <head>
-                <title>MOS BURGERS Daily Order Report</title>
-            </head>
-            <body>
-                <h1>MOS BURGERS Daily Order Report</h1>
-                <iframe width="100%" height="100%" src="${pdfData}"></iframe>
-            </body>
-            </html>
-        `);
+ // **SAVE PDF**  
+    doc.save(`MOS_BURGERS_Report.pdf`);
 
 }
 
