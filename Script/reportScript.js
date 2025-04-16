@@ -311,7 +311,7 @@ function generatePDFReport() {
 
             // Logo placement
             const logo = new Image();
-            logo.src = "Designer.jpeg";
+            logo.src = "Assets/logo.jpeg";
             doc.addImage(logo, "JPEG", margin, 3, 24, 24);
 
             // Company name and details

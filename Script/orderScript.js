@@ -70,7 +70,7 @@ function printOrderReport(index) {
 
     // **LOGO & COMPANY DETAILS**  
     const logo = new Image();
-    logo.src = "Designer.jpeg";
+    logo.src = "Assets/logo.jpeg";
     doc.addImage(logo, "JPEG", 15, 8, 30, 30);
 
     doc.setFont("helvetica", "bold");
@@ -161,7 +161,9 @@ function printOrderReport(index) {
     doc.text("We can't wait to serve you again!", 105, 290, null, null, "center");
 
     // **SAVE PDF**  
+
     doc.save(`MOS_BURGERS_Invoice_${index + 1}.pdf`);
+
 
     // Open PDF in a new window
     // const pdfData = doc.output("datauristring");
